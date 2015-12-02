@@ -1,5 +1,9 @@
 import pickle
-from PyQt4 import QtCore, QtGui, uic
+
+from PyQt4 import uic
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+
 import re
 import sys
 import getCourseInfo
@@ -51,29 +55,34 @@ def parseMeet(mList):
     #print(l);
     return l;
 
-class scheduleView(QtGui.QGraphicsView):
+class courseWidget(QWidget):
+    def __init__(self,parent=None):
+        QWidget.__init__(self,parent);
+        uic.loadUi("courseWidget.ui",self);
+
+class scheduleView(QGraphicsView):
     def __init__(self, scene,mainWindow):
         self.mainWindow = mainWindow;
-        QtGui.QGraphicsView.__init__(self,scene);
+        QGraphicsView.__init__(self,scene);
         self.myScene = scene;
         self.resize(500,800);
-        self.saveBtn = QtGui.QPushButton(self);
+        self.saveBtn = QPushButton(self);
         self.saveBtn.setText('save');
         self.saveBtn.clicked.connect(self.save);
-        #self.clearBtn = QtGui.QPushButton(self);
+        #self.clearBtn = QPushButton(self);
         #self.clearBtn.setText('clear');
         #self.clearBtn.clicked.connect(self.clear);
         #self.clearBtn.move(self.saveBtn.width(),0);
-        self.previewGroup = QtGui.QGraphicsItemGroup(scene=self.myScene);
+        self.previewGroup = QGraphicsItemGroup(scene=self.myScene);
+        self.cObj = courseWidget(self);
         self.setWindowTitle('schedule');
     def closeEvent(self,event):
         self.mainWindow.clear();
         super(scheduleView,self).closeEvent(event);
     def clear(self):
         self.myScene.clear();
-        self.myScene.addText('BLANK');
     def save(self):
-        QtGui.QPixmap.grabWidget(self).save('schedule.png');
+        QPixmap.grabWidget(self).save('schedule.png');
     def getItemList(self,i):
         itemList = [];
         mp = courseInfo[i]['meetingPattern'];
@@ -82,10 +91,10 @@ class scheduleView(QtGui.QGraphicsView):
             for t in time:
                 top = t[0] - 60*9;
                 height = t[1]-t[0]; #60px per hour
-                tCol = QtGui.QColor.fromRgb(66,66,128,128);
-                r = QtCore.QRectF(left,top,100,height);
-                r = QtGui.QGraphicsRectItem(r);
-                t = QtGui.QGraphicsTextItem(courseInfo[i]['code']);
+                tCol = QColor.fromRgb(66,66,128,128);
+                r = QRectF(left,top,100,height);
+                r = QGraphicsRectItem(r);
+                t = QGraphicsTextItem(courseInfo[i]['code']);
                 t.setPos(left,top);
                 itemList.append(r);
                 itemList.append(t);
@@ -97,8 +106,8 @@ class scheduleView(QtGui.QGraphicsView):
             self.myScene.destroyItemGroup(self.previewGroup);
         except RuntimeError:
             pass;
-        tCol = QtGui.QColor.fromRgb(66,66,128,128);
-        tPen = QtGui.QPen(tCol);
+        tCol = QColor.fromRgb(66,66,128,128);
+        tPen = QPen(tCol);
         itemList = self.getItemList(i);
         for item in itemList:
             if(item.type() is TEXT_TYPE):
@@ -107,10 +116,11 @@ class scheduleView(QtGui.QGraphicsView):
                 item.setPen(tPen);
         self.previewGroup = self.myScene.createItemGroup(itemList);
     def addCourse(self,i):
-        cCol = QtGui.QColor.fromRgb(0,0,0,255);
-        cPen = QtGui.QPen(cCol);
+        cCol = QColor.fromRgb(0,0,0,255);
+        cPen = QPen(cCol);
         itemList = self.getItemList(i);
         for item in itemList:
+            item.setData(Qt.UserRole,i);
             if(item.type() is TEXT_TYPE):
                 item.setDefaultTextColor(cCol);
             else:
@@ -118,16 +128,16 @@ class scheduleView(QtGui.QGraphicsView):
             self.myScene.addItem(item);
     def removeCourse(self,i):
         for item in self.myScene.items():
-            if item.data(QtCore.Qt.UserRole) == i:
+            if item.data(Qt.UserRole) == i:
                 self.myScene.removeItem(item);
     def paintEvent(self,event):
-        QtGui.QGraphicsView.paintEvent(self,event);
-        q = QtGui.QPainter(self.viewport());
+        QGraphicsView.paintEvent(self,event);
+        q = QPainter(self.viewport());
 
-class OS_GUI(QtGui.QMainWindow):
+class OS_GUI(QMainWindow):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self,parent);
-        uic.loadUi('/home/jamiecho/LearnQT/OlinSchedulerUI/mainwindow.ui',self);
+        QWidget.__init__(self,parent);
+        uic.loadUi('mainwindow.ui',self);
         self.pool.activated.connect(self.onSelectClass);
         self.loadData();
         self.onOpenSchedule();
@@ -148,7 +158,7 @@ class OS_GUI(QtGui.QMainWindow):
             self.pool.blockSignals(False);
 
     def onOpenSchedule(self):
-        self.visual = scheduleView(QtGui.QGraphicsScene(self),self); #beware: not a parent
+        self.visual = scheduleView(QGraphicsScene(self),self); #beware: not a parent
         self.visual.show();
     def onSelectClass(self, index):
         global courseInfo; 
@@ -165,12 +175,12 @@ class OS_GUI(QtGui.QMainWindow):
     def addCourse(self, args):
         index = self.pool.currentIndex();
         info = courseInfo[index];
-        item = QtGui.QListWidgetItem(info['code']+' :'+info['title'])
-        item.setData(QtCore.Qt.UserRole,index);
+        item = QListWidgetItem(info['code']+' :'+info['title'])
+        item.setData(Qt.UserRole,index);
         self.myCourses.addItem(item);
         self.visual.addCourse(index);
     def removeCourse(self):
-        index = self.myCourses.currentItem().data(QtCore.Qt.UserRole);
+        index = self.myCourses.currentItem().data(Qt.UserRole);
         self.myCourses.takeItem(self.myCourses.currentRow());
         self.visual.removeCourse(index);
     def clear(self):
@@ -181,7 +191,7 @@ class OS_GUI(QtGui.QMainWindow):
         super(OS_GUI,self).closeEvent(event);
 
 if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv);
+    app = QApplication(sys.argv);
     w = OS_GUI();
     w.setWindowTitle('OlinScheduler');
     w.show();
