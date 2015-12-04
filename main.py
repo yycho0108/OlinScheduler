@@ -3,7 +3,6 @@ import pickle
 from PyQt4 import uic
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-
 import re
 import sys
 import getCourseInfo
@@ -56,10 +55,31 @@ def parseMeet(mList):
     return l;
 
 class courseWidget(QWidget):
-    def __init__(self,parent=None):
+    def __init__(self,width=100,height=100,x=0,y=0,parent=None):
         QWidget.__init__(self,parent);
         uic.loadUi("courseWidget.ui",self);
-
+        self.setTitle("courseTitle");
+        self.setLocation("courseLocation");
+        self.setAutoFillBackground(True);
+        col = QColor.fromRgb(55,99,125,192);
+        self.setBkColor(col);
+        self.optionsBtn.clicked.connect(self.setOptions);
+        self.resize(width,height);
+        self.move(x,y);
+    def setTitle(self,title):
+        self.title.setText(title);
+    def setLocation(self,location):
+        self.location.setText(location);
+    def setBkColor(self,col):
+        pal = self.palette();
+        pal.setColor(self.backgroundRole(),col);
+        self.setPalette(pal);
+    def setOptions(self,args):
+        print(args);
+        d = QDialog(self);
+        uic.loadUi("options.ui",d);
+        print(d.exec_());
+        pass;
 class scheduleView(QGraphicsView):
     def __init__(self, scene,mainWindow):
         self.mainWindow = mainWindow;
@@ -69,16 +89,15 @@ class scheduleView(QGraphicsView):
         self.saveBtn = QPushButton(self);
         self.saveBtn.setText('save');
         self.saveBtn.clicked.connect(self.save);
-        #self.clearBtn = QPushButton(self);
-        #self.clearBtn.setText('clear');
-        #self.clearBtn.clicked.connect(self.clear);
-        #self.clearBtn.move(self.saveBtn.width(),0);
         self.previewGroup = QGraphicsItemGroup(scene=self.myScene);
-        self.cObj = courseWidget(self);
+        self.coursesList = [];
         self.setWindowTitle('schedule');
     def closeEvent(self,event):
         self.mainWindow.clear();
         super(scheduleView,self).closeEvent(event);
+    def updateDisplay(self):
+        #example placeholder code
+        print('here');
     def clear(self):
         self.myScene.clear();
     def save(self):
@@ -145,6 +164,8 @@ class OS_GUI(QMainWindow):
         self.removeBtn.clicked.connect(self.removeCourse);
         self.clearBtn.clicked.connect(self.clear);
         self.openSchedule.clicked.connect(self.onOpenSchedule);
+        self.actionTitle.triggered.connect(self.visual.updateDisplay);
+
     def loadData(self):
         with open('courseInfo.dat', 'rb') as f_in:
             self.pool.blockSignals(True);
