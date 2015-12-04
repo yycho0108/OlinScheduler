@@ -192,6 +192,9 @@
       <height>27</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>Save Schedule as .bmp</string>
+    </property>
     <property name="text">
      <string>Save</string>
     </property>

@@ -4,10 +4,10 @@ from PyQt4.QtCore import *
 from PyQt4 import uic
 from parser import *
 
-class courseDisplay(QWidget):
+class courseObject(QWidget):
     """
     container/manager for sessions
-    courseDisplay(index,parent);
+    courseObject(index,parent);
     """
     def __init__(self,parent=None,index=-1):
         QWidget.__init__(self,parent);

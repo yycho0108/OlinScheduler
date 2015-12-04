@@ -1,17 +1,18 @@
+#!/usr/bin/python3
+
+#built-in modules
+import sys
 import pickle
 
+#QT modules
 from PyQt4 import uic
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-import sys
+#custom modules
 import getCourseInfo
-
 import globalVar
-from courseDisplay import *
-
-RECT_TYPE = 3;
-TEXT_TYPE = 8;
+from courseObject import *
 
 class scheduleView(QGraphicsView):
     def __init__(self, scene,mainWindow):
@@ -38,7 +39,7 @@ class scheduleView(QGraphicsView):
     def preview(self,i):
         if self.prevCourse is not None:
             self.prevCourse.clear();
-        self.prevCourse = courseDisplay(parent=self,index=i);
+        self.prevCourse = courseObject(parent=self,index=i);
     def addCourse(self,i):
         cCol = QColor.fromRgb(0,0,0,255);
         self.prevCourse.setFrameColor(cCol);
