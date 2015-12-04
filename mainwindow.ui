@@ -123,11 +123,17 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QPushButton" name="removeBtn">
+      <property name="toolTip">
+       <string>remove selected course from my list</string>
+      </property>
       <property name="text">
        <string>Remove</string>
       </property>
      </widget>
      <widget class="QPushButton" name="clearBtn">
+      <property name="toolTip">
+       <string>clear all in my courses</string>
+      </property>
       <property name="text">
        <string>Clear</string>
       </property>
@@ -193,7 +199,7 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string>Save Schedule as .bmp</string>
+     <string>Save Schedule as .png</string>
     </property>
     <property name="text">
      <string>Save</string>

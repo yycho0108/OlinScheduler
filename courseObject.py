@@ -13,51 +13,42 @@ class courseObject(QWidget):
         QWidget.__init__(self,parent);
         self.index = index;
         self.itemList = self.getItemList(index);
-        self.sessionList = [];
         info = globalVar.courseInfo[index];
         self.title = info['title'];
 
         for item in self.itemList:
-            w = sessionWidget(parent = self, title = self.title,loc=item['loc'],rect=item['rect']);
-            w.show();
-            self.sessionList.append(w);
+            w = sessionWidget(parent = self, title = self.title,loc=item['loc']);
+            item['widget'] = w;
+            item['widget'].show();
         self.show();
     def setFrameColor(self,col):
-        for w in self.sessionList:
-            w.setFrameColor(col);
+        for item in self.itemList:
+            item['widget'].setFrameColor(col);
     def clear(self):
-        for w in self.sessionList:
-            w.deleteLater();
+        for item in self.itemList:
+            item['widget'].deleteLater();
     def getItemList(self,i): # will now return a list of rects
         """
-        getItemList(index) --> list << {rect:QRectF,loc:String}
+        ##TEXT
         """
-        itemList = [];
-        mp = globalVar.courseInfo[i]['meetingPattern']; #mp[] << {day,time[start,end],loc}
-        for s in mp: #s = meeting session
-            left = 100*parseDay(s['day']);
-            t = s['time'];
-            top = t[0] - 60*9;
-            height = t[1] - t[0];
-            width = 100;
-            r = QRectF(left,top,width,height);
-            itemList.append({'rect':r,'loc':s['loc']});
-        return itemList;
-
+        return globalVar.courseInfo[i]['meetingPattern']; #mp[] << {day,time[start,end],loc}
+    def resizeEvent(self,event):
+        QWidget.resizeEvent(self,event);
+        wndHeight = self.height();
+        width = self.width()/5;
+        ratio = self.height() /(12*60);
+        for item in self.itemList:
+            t = item['time'];
+            left = width * parseDay(item['day']);
+            top = (t[0]-9*60) * ratio;
+            bottom = (t[1]-9*60)*ratio;
+            item['widget'].move(left,top);
+            item['widget'].resize(width,bottom-top);
 class sessionWidget(QWidget):
     """
-    sessionWidget(parent,title,loc,width,height,x,y)
-    sessionWidget(parent,title,loc,rect:QRectF)
-    sessionWidget(parent,title,loc,rect:QRect)
+    sessionWidget(parent=None,title='N/A',loc='N/A')
     """
-    def __init__(self,parent=None,title='N/A',loc='N/A',rect=None,width=100,height=100,x=0,y=0):
-        
-        if rect is not None:
-            width = rect.width();
-            height = rect.height();
-            x = rect.left();
-            y = rect.top();
-        
+    def __init__(self,parent=None,title='N/A',loc='N/A'):
         QWidget.__init__(self,parent);
         uic.loadUi("sessionWidget.ui",self);
         
@@ -68,13 +59,12 @@ class sessionWidget(QWidget):
         self.setAutoFillBackground(True);
         tCol = QColor.fromRgb(66,66,128,32);
         self.setFrameColor(tCol);
-        self.resize(width,height);
-        self.move(x,y);
-    
     def setTitle(self,title):
         self.title.setText(title);
+        self.title.setToolTip(title);
     def setLocation(self,location):
         self.location.setText(location);
+        self.location.setToolTip(location);
     def setFrameColor(self,col):
         pal = self.palette();
         pal.setColor(self.frame.foregroundRole(),col);
@@ -85,6 +75,33 @@ class sessionWidget(QWidget):
         d.exec_();
         pass;
     def resizeEvent(self,event):
-        QWidget.resizeEvent(self,event);
+        print('enter');
         self.frame.resize(self.width(),self.height());
-        pass;
+        self.resizeLabel(self.title);
+        self.resizeLabel(self.location);
+        self.resizeLabel(self.time);
+
+    def resizeLabel(self,label):
+        fit = False;
+        string = label.text();
+        myFont = label.font();
+        tmp = QLabel(string,None,label.windowFlags());
+        tmp.setFont(myFont);
+        tmp.setWordWrap(True);
+        #print(label.wordWrap());
+        tmp.setMaximumWidth(self.width());
+        label.setText("");
+        while not fit:
+            fm = QFontMetrics(myFont);
+            bound = fm.boundingRect(0,0, label.width(), label.height(), Qt.AlignLeft|Qt.TextWordWrap, string);
+            if (bound.height() <= label.height()):
+                fit = True;
+            else:
+                #print(bound.height());
+                if myFont.pointSize() < 4:
+                    break;
+                myFont.setPointSize(myFont.pointSize() - 1);
+                tmp.setFont(myFont);
+        label.setFont(myFont);
+        label.setText(string);  
+        #print(myFont.pointSize());

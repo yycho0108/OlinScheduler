@@ -40,6 +40,7 @@ class scheduleView(QGraphicsView):
         if self.prevCourse is not None:
             self.prevCourse.clear();
         self.prevCourse = courseObject(parent=self,index=i);
+        self.prevCourse.resize(self.width(),self.height());
     def addCourse(self,i):
         cCol = QColor.fromRgb(0,0,0,255);
         self.prevCourse.setFrameColor(cCol);
@@ -54,6 +55,14 @@ class scheduleView(QGraphicsView):
     def paintEvent(self,event):
         QGraphicsView.paintEvent(self,event);
         q = QPainter(self.viewport());
+    def resizeEvent(self,event):
+        QGraphicsView.resizeEvent(self,event);
+        w = self.width();
+        h = self.height();
+        if self.prevCourse is not None:
+            self.prevCourse.resize(w,h);
+        for c in self.courseList:
+            c.resize(w,h);
 
 class loginDlg(QDialog):
     def __init__(self,parent=None):
