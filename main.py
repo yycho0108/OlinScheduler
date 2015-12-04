@@ -30,10 +30,12 @@ def parseTime(time): #convert to numeric min, 24 hr scale
     return hr*60 + mn;
 def parseDay(d):
     return 'MTWRF'.find(d);
-def parseMeet(mList):
-    l = {};
-    #duration = namedtuple('duration',['start','end']);
-    for meet in mList:
+def parseMeet(inList):
+    """
+    parseMeet(inList) --> list of {day:String,time[start,end]:list[int,int],loc:String}
+    """
+    outList = []
+    for meet in inList:
         try:
             time,loc = meet.split(';');
             days,time = time.split(' ',1);
@@ -44,28 +46,80 @@ def parseMeet(mList):
                 else:
                     start += ' PM';
             for d in days:
-                if d not in l:
-                    l[d] = [];
-                l[d].append([parseTime(start), parseTime(end)]);
-            #print("start: ",start, " end : ", end);
+                outList.append({
+                    'day':d,
+                    'time':[parseTime(start),parseTime(end)],
+                    'loc':loc
+                    });
         except ValueError: #Invalid/Undetermined Meeting Pattern
-            #print(meet);
-            pass
-    #print(l);
-    return l;
-
-class courseWidget(QWidget):
-    def __init__(self,width=100,height=100,x=0,y=0,parent=None):
+            pass;
+    return outList;
+class course(QWidget):
+    """
+    container/manager for sessions
+    course(index,parent);
+    """
+    def __init__(self,parent=None,index=-1):
         QWidget.__init__(self,parent);
-        uic.loadUi("courseWidget.ui",self);
-        self.setTitle("courseTitle");
-        self.setLocation("courseLocation");
+        self.itemList = self.getItemList(index);
+        self.sessionList = [];
+        info = courseInfo[index];
+        self.title = info['title'];
+
+        for item in self.itemList:
+            w = sessionWidget(parent = self, title = self.title,loc=item['loc'],rect=item['rect']);
+            w.show();
+            self.sessionList.append(w);
+        self.show();
+    def setBkColor(self,col):
+        for w in self.sessionList:
+            w.setBkColor(col);
+    def clear(self):
+        for w in self.sessionList:
+            w.deleteLater();
+    def getItemList(self,i): # will now return a list of rects
+        """
+        getItemList(index) --> list << {rect:QRectF,loc:String}
+        """
+        itemList = [];
+        mp = courseInfo[i]['meetingPattern']; #mp[] << {day,time[start,end],loc}
+        for s in mp: #s = meeting session
+            left = 100*parseDay(s['day']);
+            t = s['time'];
+            top = t[0] - 60*9;
+            height = t[1] - t[0];
+            width = 100;
+            r = QRectF(left,top,width,height);
+            itemList.append({'rect':r,'loc':s['loc']});
+        return itemList;
+class sessionWidget(QWidget):
+    """
+    sessionWidget(parent,title,loc,width,height,x,y)
+    sessionWidget(parent,title,loc,rect:QRectF)
+    sessionWidget(parent,title,loc,rect:QRect)
+    """
+    def __init__(self,parent=None,title='N/A',loc='N/A',rect=None,width=100,height=100,x=0,y=0):
+        
+        if rect is not None:
+            width = rect.width();
+            height = rect.height();
+            x = rect.left();
+            y = rect.top();
+        
+        QWidget.__init__(self,parent);
+        uic.loadUi("sessionWidget.ui",self);
+        
+        global courseInfo; 
+        self.setTitle(title);
+        self.setLocation(loc);
+        
         self.setAutoFillBackground(True);
-        col = QColor.fromRgb(55,99,125,192);
-        self.setBkColor(col);
+        tCol = QColor.fromRgb(66,66,128,32);
+        self.setBkColor(tCol);
         self.optionsBtn.clicked.connect(self.setOptions);
         self.resize(width,height);
         self.move(x,y);
+    
     def setTitle(self,title):
         self.title.setText(title);
     def setLocation(self,location):
@@ -75,10 +129,13 @@ class courseWidget(QWidget):
         pal.setColor(self.backgroundRole(),col);
         self.setPalette(pal);
     def setOptions(self,args):
-        print(args);
         d = QDialog(self);
         uic.loadUi("options.ui",d);
-        print(d.exec_());
+        d.exec_();
+        pass;
+    def resizeEvent(self,event):
+        QWidget.resizeEvent(self,event);
+        self.frame.resize(self.width(),self.height());
         pass;
 class scheduleView(QGraphicsView):
     def __init__(self, scene,mainWindow):
@@ -89,9 +146,9 @@ class scheduleView(QGraphicsView):
         self.saveBtn = QPushButton(self);
         self.saveBtn.setText('save');
         self.saveBtn.clicked.connect(self.save);
-        self.previewGroup = QGraphicsItemGroup(scene=self.myScene);
-        self.coursesList = [];
         self.setWindowTitle('schedule');
+        self.prevCourse = None;
+        self.courseList = [];
     def closeEvent(self,event):
         self.mainWindow.clear();
         super(scheduleView,self).closeEvent(event);
@@ -102,53 +159,32 @@ class scheduleView(QGraphicsView):
         self.myScene.clear();
     def save(self):
         QPixmap.grabWidget(self).save('schedule.png');
-    def getItemList(self,i):
+    def getItemList(self,i): # will now return a list of rects
+        """
+        getItemList(index) --> list << {rect:QRectF,loc:String}
+        """
         itemList = [];
-        mp = courseInfo[i]['meetingPattern'];
-        for day, time in mp.items():
-            left = 100*parseDay(day);
-            for t in time:
-                top = t[0] - 60*9;
-                height = t[1]-t[0]; #60px per hour
-                tCol = QColor.fromRgb(66,66,128,128);
-                r = QRectF(left,top,100,height);
-                r = QGraphicsRectItem(r);
-                t = QGraphicsTextItem(courseInfo[i]['code']);
-                t.setPos(left,top);
-                itemList.append(r);
-                itemList.append(t);
+        mp = courseInfo[i]['meetingPattern']; #mp[] << {day,time[start,end],loc}
+        for s in mp: #s = meeting session
+            left = 100*parseDay(s['day']);
+            t = s['time'];
+            top = t[0] - 60*9;
+            height = t[1] - t[0];
+            width = 100;
+            r = QRectF(left,top,width,height);
+            itemList.append({'rect':r,'loc':s['loc']});
         return itemList;
     def preview(self,i):
-        try:
-            for item in self.previewGroup.childItems():
-                self.myScene.removeItem(item);
-            self.myScene.destroyItemGroup(self.previewGroup);
-        except RuntimeError:
-            pass;
-        tCol = QColor.fromRgb(66,66,128,128);
-        tPen = QPen(tCol);
-        itemList = self.getItemList(i);
-        for item in itemList:
-            if(item.type() is TEXT_TYPE):
-                item.setDefaultTextColor(tCol);
-            else:
-                item.setPen(tPen);
-        self.previewGroup = self.myScene.createItemGroup(itemList);
+        if self.prevCourse is not None:
+            self.prevCourse.clear();
+        self.prevCourse = course(parent=self,index=i);
     def addCourse(self,i):
         cCol = QColor.fromRgb(0,0,0,255);
-        cPen = QPen(cCol);
-        itemList = self.getItemList(i);
-        for item in itemList:
-            item.setData(Qt.UserRole,i);
-            if(item.type() is TEXT_TYPE):
-                item.setDefaultTextColor(cCol);
-            else:
-                item.setPen(cPen);
-            self.myScene.addItem(item);
+        self.prevCourse.setBkColor(cCol);
+        self.courseList.append(self.prevCourse);
+        self.prevCourse = None;
     def removeCourse(self,i):
-        for item in self.myScene.items():
-            if item.data(Qt.UserRole) == i:
-                self.myScene.removeItem(item);
+        pass;
     def paintEvent(self,event):
         QGraphicsView.paintEvent(self,event);
         q = QPainter(self.viewport());
