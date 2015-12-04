@@ -19,9 +19,6 @@ class scheduleView(QGraphicsView):
         QGraphicsView.__init__(self,scene);
         self.myScene = scene;
         self.resize(500,800);
-        self.saveBtn = QPushButton(self);
-        self.saveBtn.setText('save');
-        self.saveBtn.clicked.connect(self.save);
         self.setWindowTitle('schedule');
         self.prevCourse = None;
         self.courseList = [];
@@ -33,7 +30,9 @@ class scheduleView(QGraphicsView):
         # example placeholder code
         print('here');
     def clear(self):
-        self.myScene.clear();
+        for c in self.courseList:
+            c.clear();
+        self.courseList = [];
     def save(self):
         QPixmap.grabWidget(self).save('schedule.png');
     def preview(self,i):
@@ -55,22 +54,38 @@ class scheduleView(QGraphicsView):
         QGraphicsView.paintEvent(self,event);
         q = QPainter(self.viewport());
 
+class loginDlg(QDialog):
+    def __init__(self,parent=None):
+        QDialog.__init__(self,parent);
+        uic.loadUi("credentials.ui",self);
+        self.termBox.addItem('SP');
+        self.termBox.addItem('FA');
+    def accept(self):
+        logID = str(self.idEdit.text());
+        logPW = str(self.pwEdit.text());
+        Sem = str(self.yearBox.value()) + ';' + str(self.termBox.currentText());
+        getCourseInfo.getCourseInfo(logID,logPW,Sem);
+        QDialog.accept(self);
+    def reject(self):
+        QDialog.reject(self);
+
 class OS_GUI(QMainWindow):
     def __init__(self, parent=None):
         QWidget.__init__(self,parent);
         uic.loadUi('mainwindow.ui',self);
         self.pool.activated.connect(self.onSelectClass);
-        self.loadData();
         self.onOpenSchedule();
         self.addBtn.clicked.connect(self.addCourse);
         self.removeBtn.clicked.connect(self.removeCourse);
         self.clearBtn.clicked.connect(self.clear);
         self.openSchedule.clicked.connect(self.onOpenSchedule);
         self.actionTitle.triggered.connect(self.visual.updateDisplay);
+        self.saveBtn.clicked.connect(self.save);
+        self.loadData();
 
     def loadData(self):
         try:
-            with open('wrongInfo.dat', 'rb') as f_in:
+            with open('courseInfo.dat', 'rb') as f_in:
                 self.pool.blockSignals(True);
                 self.pool.clear();
                 globalVar.courseInfo = pickle.load(f_in);
@@ -81,13 +96,18 @@ class OS_GUI(QMainWindow):
                 self.pool.blockSignals(False);
         except IOError:
             reply = QMessageBox.question(self,"Course Data Not Found","Initialize Database(courseInfo.dat)?", QMessageBox.Yes|QMessageBox.No);
+            global app;
             if reply == QMessageBox.Yes:
-                d = QDialog(self);
-                uic.loadUi("credentials.ui",d);
-                d.exec_();
-                pass;#reinitialize
+                d = loginDlg(parent=self);
+                if d.exec_() == QDialog.Rejected:
+                    raise;
+                else:
+                    # established data pool
+                    self.loadData();
             else:
-                pass;
+                raise;
+    def save(self):
+        self.visual.save();
     def onOpenSchedule(self):
         self.visual = scheduleView(QGraphicsScene(self),self); #beware: not a parent
         self.visual.show();
@@ -121,8 +141,10 @@ class OS_GUI(QMainWindow):
         super(OS_GUI,self).closeEvent(event);
 
 if __name__ == "__main__":
+    global app;
     app = QApplication(sys.argv);
     w = OS_GUI();
     w.setWindowTitle('OlinScheduler');
     w.show();
+    w.loadData();
     sys.exit(app.exec_());

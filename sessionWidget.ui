@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>214</width>
-    <height>136</height>
+    <width>100</width>
+    <height>166</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,8 +24,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>211</width>
-     <height>131</height>
+     <width>100</width>
+     <height>161</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -37,51 +37,20 @@
    <property name="lineWidth">
     <number>5</number>
    </property>
-   <widget class="QPushButton" name="optionsBtn">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>100</y>
-      <width>91</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Options</string>
-    </property>
-   </widget>
-   <widget class="QSplitter" name="splitter">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>167</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-    <widget class="QLabel" name="title">
-     <property name="text">
-      <string>Title</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </widget>
    <widget class="QLabel" name="location">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>0</x>
       <y>40</y>
-      <width>66</width>
-      <height>17</height>
+      <width>100</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string>Location</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
@@ -90,14 +59,36 @@
    <widget class="QLabel" name="time">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>60</y>
-      <width>66</width>
-      <height>17</height>
+      <x>0</x>
+      <y>90</y>
+      <width>100</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="text">
      <string>Time</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="title">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>100</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Title</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
     <property name="wordWrap">
      <bool>true</bool>

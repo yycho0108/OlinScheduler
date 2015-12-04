@@ -68,7 +68,6 @@ class sessionWidget(QWidget):
         self.setAutoFillBackground(True);
         tCol = QColor.fromRgb(66,66,128,32);
         self.setFrameColor(tCol);
-        self.optionsBtn.clicked.connect(self.setOptions);
         self.resize(width,height);
         self.move(x,y);
     
