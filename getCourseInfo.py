@@ -5,6 +5,7 @@ import pickle
 from urllib.request import urlretrieve
 import subprocess
 from selenium import webdriver
+from parser import *
 
 def reachSite(userName, password, target="2016;SP"):
     driver = webdriver.Firefox();
@@ -45,12 +46,12 @@ def scrapeInfo(driver):
                 "instructor" : content[5],
                 "openSpots" : content[6],
                 "status" : content[7],
-                "meetingPattern" : content[8],
+                "meetingPattern" : parseMeet(content[8]),
                 "credit" : content[9],
             };
             record.append(d);
     return record;
-def getCourseInfo(userName,password,target):
+def getCourseInfo(userName,password,target="2016;SP"):
     driver = reachSite(userName,password,target);
     record = scrapeInfo(driver);
     with open('courseInfo.dat', 'wb') as out:
