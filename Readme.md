@@ -2,8 +2,7 @@
 Visualizes Olin Courses for you!
 
 # To Do:
-- adding/removing classes from pool
 - finding best-fit
+- detecting collisions
 - searching classes by criteria
 - setting display options
-- display axes(time(hour) on left & day on time)

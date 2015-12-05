@@ -20,7 +20,7 @@ class CourseObject():
         self.title = info['title'];
 
         for item in self.itemList:
-            w = sessionWidget(parent = self.parent, title = self.title,loc=item['loc']);
+            w = SessionWidget(parent = self.parent, title = self.title,loc=item['loc']);
             item['widget'] = w;
             item['widget'].show();
         #self.setAttribute(Qt.WA_TransparentForMouseEvents,True);
@@ -47,13 +47,13 @@ class CourseObject():
             item['widget'].move(left,top);
             item['widget'].resize(width,bottom-top);
 
-class sessionWidget(QWidget):
+class SessionWidget(QWidget):
     """
-    sessionWidget(parent=None,title='N/A',loc='N/A')
+    SessionWidget(parent=None,title='N/A',loc='N/A')
     """
     def __init__(self,parent=None,title='N/A',loc='N/A'):
         QWidget.__init__(self,parent);
-        uic.loadUi("sessionWidget.ui",self);
+        uic.loadUi("SessionWidget.ui",self);
         
         globalVar.courseInfo; 
         self.setTitle(title);
@@ -78,7 +78,7 @@ class sessionWidget(QWidget):
         self.setPalette(pal);
     def setOptions(self,args):
         d = QDialog(self);
-        uic.loadUi("options.ui",d);
+        uic.loadUi("Options.ui",d);
         d.exec_();
     def resizeEvent(self,event):
         QWidget.resizeEvent(self,event);

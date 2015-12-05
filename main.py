@@ -10,10 +10,10 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 #custom modules
-import getCourseInfo
 import globalVar
 from CourseObject import *
 from CourseEntryDlg import *
+from LoginDlg import *
 
 class ScheduleView(QGraphicsView):
     def __init__(self, scene,mainWindow):
@@ -88,20 +88,7 @@ class ScheduleView(QGraphicsView):
     #    QGraphicsView.mouseMoveEvent(self,event);
     #    print('move');
     #    pass;
-class LoginDlg(QDialog):
-    def __init__(self,parent=None):
-        QDialog.__init__(self,parent);
-        uic.loadUi("LoginDlg.ui",self);
-        #self.termBox.addItem('SP');
-        #self.termBox.addItem('FA');
-    def accept(self):
-        logID = str(self.idEdit.text());
-        logPW = str(self.pwEdit.text());
-        Sem = str(self.yearBox.value()) + ';' + str(self.termBox.currentText());
-        getCourseInfo.getCourseInfo(logID,logPW,Sem);
-        QDialog.accept(self);
-    def reject(self):
-        QDialog.reject(self);
+
 
 class OS_GUI(QMainWindow):
     def __init__(self, parent=None):
@@ -171,9 +158,11 @@ class OS_GUI(QMainWindow):
             globalVar.courseInfo.append(course);
             self.pool.addItem(course['title']);
     def deleteCourse(self,args):
-        i = self.pool.currentIndex();
-        self.pool.removeItem(i);
-        del globalVar.courseInfo[i];
+        reply = QMessageBox.question(self,"Warning","Are you sure you want to remove this course?",QMessageBox.Yes|QMessageBox.No);
+        if reply == QMessageBox.Yes:
+            i = self.pool.currentIndex();
+            self.pool.removeItem(i);
+            del globalVar.courseInfo[i];
     def selectCourse(self, args):
         index = self.pool.currentIndex();
         info = globalVar.courseInfo[index];
