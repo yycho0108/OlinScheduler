@@ -70,6 +70,11 @@ class ScheduleView(QGraphicsView):
         for i in range(0,6):
             for j in range(0,13):
                 q.drawRect(i*w/6,j*h/13,w/6,h/13);
+                if i == 0 and j != 0:
+                    q.drawText(i*w/6,j*h/13,w/6,h/13,Qt.AlignTop|Qt.AlignHCenter,str(8+j)+":00");
+                elif j == 0:
+                    days = ['','Monday','TuesDay','WednesDay','Thursday','Friday'];
+                    q.drawText(i*w/6,j*h/13,w/6,h/13,Qt.AlignVCenter|Qt.AlignHCenter,days[i]);
 
     def resizeEvent(self,event):
         w = self.width();
