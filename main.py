@@ -23,6 +23,7 @@ class scheduleView(QGraphicsView):
         self.setWindowTitle('schedule');
         self.prevCourse = None;
         self.courseList = [];
+        self.setMouseTracking(True);
     def closeEvent(self,event):
         self.mainWindow.clear();
         super(scheduleView,self).closeEvent(event);
@@ -46,24 +47,32 @@ class scheduleView(QGraphicsView):
         self.prevCourse.setFrameColor(cCol);
         self.courseList.append(self.prevCourse);
         self.prevCourse = None;
+
     def removeCourse(self,i):
         targList = filter(lambda c : c.index == i, self.courseList);
         for c in targList:
             c.clear();
             self.courseList.remove(c);
             break;
+    def setCourseColor(self,i,col):
+        targList = filter(lambda c : c.index == i, self.courseList);
+        for c in targList:
+            c.setBkColor(col);
     def paintEvent(self,event):
         QGraphicsView.paintEvent(self,event);
-        q = QPainter(self.viewport());
+        #q = QPainter(self.viewport());
     def resizeEvent(self,event):
-        QGraphicsView.resizeEvent(self,event);
         w = self.width();
         h = self.height();
         if self.prevCourse is not None:
             self.prevCourse.resize(w,h);
         for c in self.courseList:
             c.resize(w,h);
-
+        QGraphicsView.resizeEvent(self,event);
+    #def mouseMoveEvent(self,event):
+    #    QGraphicsView.mouseMoveEvent(self,event);
+    #    print('move');
+    #    pass;
 class loginDlg(QDialog):
     def __init__(self,parent=None):
         QDialog.__init__(self,parent);
@@ -91,6 +100,7 @@ class OS_GUI(QMainWindow):
         self.openSchedule.clicked.connect(self.onOpenSchedule);
         self.actionTitle.triggered.connect(self.visual.updateDisplay);
         self.saveBtn.clicked.connect(self.save);
+        self.colorBtn.clicked.connect(self.setCourseColor);
         self.loadData();
 
     def loadData(self):
@@ -137,12 +147,20 @@ class OS_GUI(QMainWindow):
         info = globalVar.courseInfo[index];
         item = QListWidgetItem(info['code']+' :'+info['title'])
         item.setData(Qt.UserRole,index);
+        #item.setBackgroundColor(QColor.fromRgbF(0.5,0.5,0,0.5));
         self.myCourses.addItem(item);
         self.visual.addCourse(index);
     def removeCourse(self):
         index = self.myCourses.currentItem().data(Qt.UserRole);
         self.myCourses.takeItem(self.myCourses.currentRow());
         self.visual.removeCourse(index);
+    def setCourseColor(self):
+        col = QColorDialog.getColor();
+        if col.isValid():
+            item = self.myCourses.currentItem();
+            index = item.data(Qt.UserRole);
+            item.setBackgroundColor(col);
+            self.visual.setCourseColor(index,col);
     def clear(self):
         self.myCourses.clear();
         self.visual.clear();

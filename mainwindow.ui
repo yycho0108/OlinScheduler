@@ -138,6 +138,11 @@
        <string>Clear</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="colorBtn">
+      <property name="text">
+       <string>Colorize</string>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QPushButton" name="openSchedule">

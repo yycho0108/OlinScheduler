@@ -4,26 +4,32 @@ from PyQt4.QtCore import *
 from PyQt4 import uic
 from parser import *
 
-class courseObject(QWidget):
+class courseObject():
     """
     container/manager for sessions
     courseObject(index,parent);
+    **does not own session widgets**
     """
     def __init__(self,parent=None,index=-1):
-        QWidget.__init__(self,parent);
+        #QWidget.__init__(self,parent);
+        self.parent = parent;
         self.index = index;
         self.itemList = self.getItemList(index);
         info = globalVar.courseInfo[index];
         self.title = info['title'];
 
         for item in self.itemList:
-            w = sessionWidget(parent = self, title = self.title,loc=item['loc']);
+            w = sessionWidget(parent = self.parent, title = self.title,loc=item['loc']);
             item['widget'] = w;
             item['widget'].show();
-        self.show();
+        #self.setAttribute(Qt.WA_TransparentForMouseEvents,True);
+        #self.show();
     def setFrameColor(self,col):
         for item in self.itemList:
             item['widget'].setFrameColor(col);
+    def setBkColor(self,col):
+        for item in self.itemList:
+            item['widget'].setBkColor(col);
     def clear(self):
         for item in self.itemList:
             item['widget'].deleteLater();
@@ -31,12 +37,10 @@ class courseObject(QWidget):
         """
         ##TEXT
         """
-        return globalVar.courseInfo[i]['meetingPattern']; #mp[] << {day,time[start,end],loc}
-    def resizeEvent(self,event):
-        QWidget.resizeEvent(self,event);
-        wndHeight = self.height();
-        width = self.width()/5;
-        ratio = self.height() /(12*60);
+        return list(globalVar.courseInfo[i]['meetingPattern']); #mp[] << {day,time[start,end],loc}
+    def resize(self,w,h):
+        width = w/5;
+        ratio = h/(12*60);
         for item in self.itemList:
             t = item['time'];
             left = width * parseDay(item['day']);
@@ -44,6 +48,7 @@ class courseObject(QWidget):
             bottom = (t[1]-9*60)*ratio;
             item['widget'].move(left,top);
             item['widget'].resize(width,bottom-top);
+
 class sessionWidget(QWidget):
     """
     sessionWidget(parent=None,title='N/A',loc='N/A')
@@ -66,21 +71,23 @@ class sessionWidget(QWidget):
         self.location.setText(location);
         self.location.setToolTip(location);
     def setFrameColor(self,col):
-        pal = self.palette();
+        pal = self.frame.palette();
         pal.setColor(self.frame.foregroundRole(),col);
         self.frame.setPalette(pal);
+    def setBkColor(self,col):
+        pal = self.palette();
+        pal.setColor(self.backgroundRole(),col);
+        self.setPalette(pal);
     def setOptions(self,args):
         d = QDialog(self);
         uic.loadUi("options.ui",d);
         d.exec_();
-        pass;
     def resizeEvent(self,event):
-        print('enter');
+        QWidget.resizeEvent(self,event);
         self.frame.resize(self.width(),self.height());
         self.resizeLabel(self.title);
         self.resizeLabel(self.location);
         self.resizeLabel(self.time);
-
     def resizeLabel(self,label):
         fit = False;
         string = label.text();
@@ -88,7 +95,6 @@ class sessionWidget(QWidget):
         tmp = QLabel(string,None,label.windowFlags());
         tmp.setFont(myFont);
         tmp.setWordWrap(True);
-        #print(label.wordWrap());
         tmp.setMaximumWidth(self.width());
         label.setText("");
         while not fit:
@@ -97,7 +103,6 @@ class sessionWidget(QWidget):
             if (bound.height() <= label.height()):
                 fit = True;
             else:
-                #print(bound.height());
                 if myFont.pointSize() < 4:
                     break;
                 myFont.setPointSize(myFont.pointSize() - 1);
