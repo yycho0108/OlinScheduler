@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>OlinScheduler</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QSplitter" name="splitter_5">
@@ -69,25 +69,6 @@
       </property>
      </widget>
      <widget class="QLineEdit" name="credit"/>
-    </widget>
-   </widget>
-   <widget class="QSplitter" name="splitter_6">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>0</y>
-      <width>561</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-    <widget class="QComboBox" name="pool"/>
-    <widget class="QPushButton" name="addBtn">
-     <property name="text">
-      <string>Add</string>
-     </property>
     </widget>
    </widget>
    <widget class="QSplitter" name="splitter_10">
@@ -161,39 +142,6 @@
      <string>Schedule</string>
     </property>
    </widget>
-   <widget class="QSplitter" name="splitter_11">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>190</y>
-      <width>261</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>Year:</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox">
-     <property name="editable">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_7">
-     <property name="text">
-      <string>Term:</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox_2">
-     <property name="editable">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </widget>
    <widget class="QPushButton" name="saveBtn">
     <property name="geometry">
      <rect>
@@ -209,6 +157,55 @@
     <property name="text">
      <string>Save</string>
     </property>
+   </widget>
+   <widget class="QSplitter" name="splitter_6">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>0</y>
+      <width>571</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <widget class="QComboBox" name="pool">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>4</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="selectBtn">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Add Selected Course to My Courses List</string>
+     </property>
+     <property name="text">
+      <string>Select</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="newBtn">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Create A New Course</string>
+     </property>
+     <property name="text">
+      <string>New</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

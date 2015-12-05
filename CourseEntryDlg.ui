@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CourseEntryDlg</class>
+ <widget class="QDialog" name="CourseEntryDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>516</width>
+    <height>378</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CourseEntry</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>340</y>
+     <width>191</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>10</y>
+     <width>318</width>
+     <height>311</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Meeting Patterns</string>
+   </property>
+   <widget class="QPushButton" name="addBtn">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>270</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="MPTable">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>130</y>
+      <width>291</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="alternatingRowColors">
+     <bool>true</bool>
+    </property>
+    <property name="showGrid">
+     <bool>false</bool>
+    </property>
+    <property name="rowCount">
+     <number>0</number>
+    </property>
+    <property name="columnCount">
+     <number>3</number>
+    </property>
+    <column/>
+    <column/>
+    <column/>
+   </widget>
+   <widget class="QSplitter" name="splitter_5">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>291</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+    <widget class="QSplitter" name="splitter_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>Location</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="locEdit"/>
+    </widget>
+    <widget class="QSplitter" name="splitter_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>Day</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="dayCombo">
+      <item>
+       <property name="text">
+        <string>Monday</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Tuesday</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Wednesday</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Thursday</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Friday</string>
+       </property>
+      </item>
+     </widget>
+    </widget>
+    <widget class="QSplitter" name="splitter_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>Time</string>
+      </property>
+     </widget>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QTimeEdit" name="tStartEdit"/>
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>-</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+       </property>
+      </widget>
+      <widget class="QTimeEdit" name="tEndEdit"/>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>181</width>
+     <height>281</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Information</string>
+   </property>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>90</y>
+      <width>101</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Instructors :</string>
+    </property>
+   </widget>
+   <widget class="QSplitter" name="splitter_7">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>240</y>
+      <width>172</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Credit</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="creditEdit"/>
+   </widget>
+   <widget class="QSplitter" name="splitter_8">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>30</y>
+      <width>172</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Code</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="codeEdit"/>
+   </widget>
+   <widget class="QSplitter" name="splitter_9">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>58</y>
+      <width>172</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Title</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="titleEdit"/>
+   </widget>
+   <widget class="QSplitter" name="splitter_10">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>120</y>
+      <width>171</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+    <widget class="QListWidget" name="instList"/>
+    <widget class="QSplitter" name="splitter_6">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QLineEdit" name="instEdit"/>
+     <widget class="QPushButton" name="instAddBtn">
+      <property name="text">
+       <string>Add</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CourseEntryDlg</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CourseEntryDlg</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

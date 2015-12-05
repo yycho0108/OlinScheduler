@@ -3,11 +3,12 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from PyQt4 import uic
 from parser import *
+from copy import deepcopy
 
-class courseObject():
+class CourseObject():
     """
     container/manager for sessions
-    courseObject(index,parent);
+    CourseObject(index,parent);
     **does not own session widgets**
     """
     def __init__(self,parent=None,index=-1):
@@ -34,18 +35,15 @@ class courseObject():
         for item in self.itemList:
             item['widget'].deleteLater();
     def getItemList(self,i): # will now return a list of rects
-        """
-        ##TEXT
-        """
-        return list(globalVar.courseInfo[i]['meetingPattern']); #mp[] << {day,time[start,end],loc}
+        return deepcopy(globalVar.courseInfo[i]['meetingPattern']);
     def resize(self,w,h):
-        width = w/5;
-        ratio = h/(12*60);
+        width = w/6;
+        ratio = h/(13*60); #leaving space for displaying days on top
         for item in self.itemList:
             t = item['time'];
-            left = width * parseDay(item['day']);
-            top = (t[0]-9*60) * ratio;
-            bottom = (t[1]-9*60)*ratio;
+            left = width * (1 + parseDay(item['day'])); #leaving 1 for time display at left
+            top = (t[0]-8*60) * ratio; #leaving space for displaying days
+            bottom = (t[1]-8*60)*ratio;
             item['widget'].move(left,top);
             item['widget'].resize(width,bottom-top);
 
@@ -97,16 +95,28 @@ class sessionWidget(QWidget):
         tmp.setWordWrap(True);
         tmp.setMaximumWidth(self.width());
         label.setText("");
+        
         while not fit:
             fm = QFontMetrics(myFont);
             bound = fm.boundingRect(0,0, label.width(), label.height(), Qt.AlignLeft|Qt.TextWordWrap, string);
-            if (bound.height() <= label.height()):
+            if (bound.height() <= label.height() and bound.width() <= label.width()):
                 fit = True;
             else:
                 if myFont.pointSize() < 4:
                     break;
                 myFont.setPointSize(myFont.pointSize() - 1);
                 tmp.setFont(myFont);
+        
+        while fit:
+            fm = QFontMetrics(myFont);
+            bound = fm.boundingRect(0,0, label.width(), label.height(), Qt.AlignLeft|Qt.TextWordWrap, string);
+            if (bound.height() >= label.height() or  bound.width() >= label.width()):
+                fit = False;
+                myFont.setPointSize(myFont.pointSize() - 1);
+                break;
+            myFont.setPointSize(myFont.pointSize() + 1);
+            tmp.setFont(myFont);
+
         label.setFont(myFont);
         label.setText(string);  
         #print(myFont.pointSize());

@@ -12,9 +12,10 @@ from PyQt4.QtCore import *
 #custom modules
 import getCourseInfo
 import globalVar
-from courseObject import *
+from CourseObject import *
+from CourseEntryDlg import *
 
-class scheduleView(QGraphicsView):
+class ScheduleView(QGraphicsView):
     def __init__(self, scene,mainWindow):
         self.mainWindow = mainWindow;
         QGraphicsView.__init__(self,scene);
@@ -26,7 +27,7 @@ class scheduleView(QGraphicsView):
         self.setMouseTracking(True);
     def closeEvent(self,event):
         self.mainWindow.clear();
-        super(scheduleView,self).closeEvent(event);
+        super(ScheduleView,self).closeEvent(event);
     def updateDisplay(self):
         # when opts change
         # example placeholder code
@@ -40,9 +41,9 @@ class scheduleView(QGraphicsView):
     def preview(self,i):
         if self.prevCourse is not None:
             self.prevCourse.clear();
-        self.prevCourse = courseObject(parent=self,index=i);
+        self.prevCourse = CourseObject(parent=self,index=i);
         self.prevCourse.resize(self.width(),self.height());
-    def addCourse(self,i):
+    def selectCourse(self,i):
         cCol = QColor.fromRgb(0,0,0,255);
         self.prevCourse.setFrameColor(cCol);
         self.courseList.append(self.prevCourse);
@@ -60,7 +61,16 @@ class scheduleView(QGraphicsView):
             c.setBkColor(col);
     def paintEvent(self,event):
         QGraphicsView.paintEvent(self,event);
-        #q = QPainter(self.viewport());
+        q = QPainter(self.viewport());
+        w = self.width(); #5 days + 1(left) for axis labels
+        h = self.height(); # 12 hours + 1(top) for axis labels
+        myColor = QColor.fromRgbF(0.5,0.4,0.3,0.3);
+        myPen = QPen(myColor);
+        q.setPen(myPen);
+        for i in range(0,6):
+            for j in range(0,13):
+                q.drawRect(i*w/6,j*h/13,w/6,h/13);
+
     def resizeEvent(self,event):
         w = self.width();
         h = self.height();
@@ -73,12 +83,12 @@ class scheduleView(QGraphicsView):
     #    QGraphicsView.mouseMoveEvent(self,event);
     #    print('move');
     #    pass;
-class loginDlg(QDialog):
+class LoginDlg(QDialog):
     def __init__(self,parent=None):
         QDialog.__init__(self,parent);
-        uic.loadUi("credentials.ui",self);
-        self.termBox.addItem('SP');
-        self.termBox.addItem('FA');
+        uic.loadUi("LoginDlg.ui",self);
+        #self.termBox.addItem('SP');
+        #self.termBox.addItem('FA');
     def accept(self):
         logID = str(self.idEdit.text());
         logPW = str(self.pwEdit.text());
@@ -91,10 +101,12 @@ class loginDlg(QDialog):
 class OS_GUI(QMainWindow):
     def __init__(self, parent=None):
         QWidget.__init__(self,parent);
-        uic.loadUi('mainwindow.ui',self);
-        self.pool.activated.connect(self.onSelectClass);
+        uic.loadUi('MainWindow.ui',self);
+        self.pool.activated.connect(self.onBrowseClass);
+        self.visual = None;
         self.onOpenSchedule();
-        self.addBtn.clicked.connect(self.addCourse);
+        self.selectBtn.clicked.connect(self.selectCourse);
+        self.newBtn.clicked.connect(self.newCourse);
         self.removeBtn.clicked.connect(self.removeCourse);
         self.clearBtn.clicked.connect(self.clear);
         self.openSchedule.clicked.connect(self.onOpenSchedule);
@@ -102,23 +114,20 @@ class OS_GUI(QMainWindow):
         self.saveBtn.clicked.connect(self.save);
         self.colorBtn.clicked.connect(self.setCourseColor);
         self.loadData();
-
     def loadData(self):
         try:
-            with open('courseInfo.dat', 'rb') as f_in:
+            with open('course.olin', 'rb') as f_in:
                 self.pool.blockSignals(True);
                 self.pool.clear();
                 globalVar.courseInfo = pickle.load(f_in);
                 for course in globalVar.courseInfo:
-                    # make numeric
-                    # course['meetingPattern'] = parseMeet(course['meetingPattern']);
                     self.pool.addItem(course['title']);
                 self.pool.blockSignals(False);
         except IOError:
-            reply = QMessageBox.question(self,"Course Data Not Found","Initialize Database(courseInfo.dat)?", QMessageBox.Yes|QMessageBox.No);
+            reply = QMessageBox.question(self,"Course Data Not Found","Initialize Database(course.olin)?", QMessageBox.Yes|QMessageBox.No);
             global app;
             if reply == QMessageBox.Yes:
-                d = loginDlg(parent=self);
+                d = LoginDlg(parent=self);
                 if d.exec_() == QDialog.Rejected:
                     raise;
                 else:
@@ -127,11 +136,16 @@ class OS_GUI(QMainWindow):
             else:
                 raise;
     def save(self):
+        with open("course.olin", "wb") as out:
+            pickle.dump(globalVar.courseInfo,out,pickle.HIGHEST_PROTOCOL);
         self.visual.save();
     def onOpenSchedule(self):
-        self.visual = scheduleView(QGraphicsScene(self),self); #beware: not a parent
+        if self.visual is not None:
+            self.clear();
+            self.visual.deleteLater();
+        self.visual = ScheduleView(QGraphicsScene(self),self); #beware: not a parent
         self.visual.show();
-    def onSelectClass(self, index):
+    def onBrowseClass(self, index):
         info = globalVar.courseInfo[index];
         self.code.setText(info['code']);
         self.title.setText(info['title']);
@@ -142,14 +156,23 @@ class OS_GUI(QMainWindow):
         #qm.setData(qm.rowCount(), info['code'] + ' : ' + info['title']);
         self.visual.preview(index);
         self.visual.update();
-    def addCourse(self, args):
+    def newCourse(self,args):
+        d = CourseEntryDlg(parent=self);
+        if d.exec_() == QDialog.Rejected:
+            print('rejected');
+        else:
+            course = d.getClass();
+            globalVar.courseInfo.append(course);
+            self.pool.addItem(course['title']);
+
+    def selectCourse(self, args):
         index = self.pool.currentIndex();
         info = globalVar.courseInfo[index];
         item = QListWidgetItem(info['code']+' :'+info['title'])
         item.setData(Qt.UserRole,index);
         #item.setBackgroundColor(QColor.fromRgbF(0.5,0.5,0,0.5));
         self.myCourses.addItem(item);
-        self.visual.addCourse(index);
+        self.visual.selectCourse(index);
     def removeCourse(self):
         index = self.myCourses.currentItem().data(Qt.UserRole);
         self.myCourses.takeItem(self.myCourses.currentRow());

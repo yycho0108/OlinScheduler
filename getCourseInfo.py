@@ -54,9 +54,8 @@ def scrapeInfo(driver):
 def getCourseInfo(userName,password,target="2016;SP"):
     driver = reachSite(userName,password,target);
     record = scrapeInfo(driver);
-    with open('courseInfo.dat', 'wb') as out:
-        pickle.dump(record,out);
-        
+    with open('course.olin', 'wb') as out:
+        pickle.dump(record,out,pickle.HIGHEST_PROTOCOL);
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("Invalid # of arguments");

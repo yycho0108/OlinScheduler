@@ -82,7 +82,18 @@
        <number>2016</number>
       </property>
      </widget>
-     <widget class="QComboBox" name="termBox"/>
+     <widget class="QComboBox" name="termBox">
+      <item>
+       <property name="text">
+        <string>FA</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>SP</string>
+       </property>
+      </item>
+     </widget>
     </widget>
    </widget>
   </widget>
