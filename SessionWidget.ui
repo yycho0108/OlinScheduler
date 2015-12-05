@@ -35,13 +35,13 @@
     </sizepolicy>
    </property>
    <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
+    <enum>QFrame::Box</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
+    <enum>QFrame::Plain</enum>
    </property>
    <property name="lineWidth">
-    <number>5</number>
+    <number>2</number>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <property name="spacing">

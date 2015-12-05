@@ -20,7 +20,7 @@ class CourseObject():
         self.title = info['title'];
 
         for item in self.itemList:
-            w = SessionWidget(parent = self.parent, title = self.title,loc=item['loc']);
+            w = SessionWidget(parent = self.parent, title = self.title,loc=item['loc'],time=item['time']);
             item['widget'] = w;
             item['widget'].show();
         #self.setAttribute(Qt.WA_TransparentForMouseEvents,True);
@@ -51,14 +51,14 @@ class SessionWidget(QWidget):
     """
     SessionWidget(parent=None,title='N/A',loc='N/A')
     """
-    def __init__(self,parent=None,title='N/A',loc='N/A'):
+    def __init__(self,parent=None,title='N/A',loc='N/A',time=[]):
         QWidget.__init__(self,parent);
         uic.loadUi("SessionWidget.ui",self);
         
         globalVar.courseInfo; 
         self.setTitle(title);
         self.setLocation(loc);
-        
+        self.setTime(time);
         self.setAutoFillBackground(True);
         tCol = QColor.fromRgb(66,66,128,32);
         self.setFrameColor(tCol);
@@ -68,6 +68,12 @@ class SessionWidget(QWidget):
     def setLocation(self,location):
         self.location.setText(location);
         self.location.setToolTip(location);
+    def setTime(self,time):
+        ts = str(int(time[0]/60))+":"+str(time[0]%60).zfill(2);
+        te = str(int(time[1]/60))+":"+str(time[1]%60).zfill(2);
+        tstr = ts + ' - ' + te;
+        self.time.setText(tstr);
+        self.time.setToolTip(tstr);
     def setFrameColor(self,col):
         pal = self.frame.palette();
         pal.setColor(self.frame.foregroundRole(),col);

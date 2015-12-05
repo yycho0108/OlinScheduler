@@ -14,6 +14,17 @@ import globalVar
 from CourseObject import *
 from CourseEntryDlg import *
 from LoginDlg import *
+def detectCollision(i_1,i_2): #two indices
+    mp_1_list = globalVar.courseInfo[i_1]['meetingPattern']; #list of meetings
+    mp_2_list = globalVar.courseInfo[i_2]['meetingPattern'];
+    for mp_1 in mp_1_list:
+        for mp_2 in mp_2_list:
+            if mp_1['day'] is mp_2['day']:
+                t_1 = mp_1['time'];
+                t_2 = mp_2['time'];
+                if not (t_1[1]<t_2[0] or t_2[1]<t_1[0]):
+                    return True;
+    return False;
 
 class ScheduleView(QGraphicsView):
     def __init__(self, scene,mainWindow):
@@ -164,13 +175,22 @@ class OS_GUI(QMainWindow):
             self.pool.removeItem(i);
             del globalVar.courseInfo[i];
     def selectCourse(self, args):
-        index = self.pool.currentIndex();
-        info = globalVar.courseInfo[index];
+        i_new = self.pool.currentIndex();
+        for i in range(self.myCourses.count()):
+            i_old = self.myCourses.item(i).data(Qt.UserRole);
+            if detectCollision(i_new,i_old):
+                #ask user for confirmation
+                reply = QMessageBox.question(self,"Collision Detected","Some courses collide in your schedule. continue?", QMessageBox.Yes|QMessageBox.No);
+                if reply == QMessageBox.No:
+                    return;
+                else: #the user clearly doesn't care
+                    break;
+        info = globalVar.courseInfo[i_new];
         item = QListWidgetItem(info['code']+' :'+info['title'])
-        item.setData(Qt.UserRole,index);
+        item.setData(Qt.UserRole,i_new);
         #item.setBackgroundColor(QColor.fromRgbF(0.5,0.5,0,0.5));
         self.myCourses.addItem(item);
-        self.visual.selectCourse(index);
+        self.visual.selectCourse(i_new);
     def removeCourse(self):
         index = self.myCourses.currentItem().data(Qt.UserRole);
         self.myCourses.takeItem(self.myCourses.currentRow());
