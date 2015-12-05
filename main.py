@@ -107,6 +107,7 @@ class OS_GUI(QMainWindow):
         self.onOpenSchedule();
         self.selectBtn.clicked.connect(self.selectCourse);
         self.newBtn.clicked.connect(self.newCourse);
+        self.deleteBtn.clicked.connect(self.deleteCourse);
         self.removeBtn.clicked.connect(self.removeCourse);
         self.clearBtn.clicked.connect(self.clear);
         self.openSchedule.clicked.connect(self.onOpenSchedule);
@@ -164,7 +165,10 @@ class OS_GUI(QMainWindow):
             course = d.getClass();
             globalVar.courseInfo.append(course);
             self.pool.addItem(course['title']);
-
+    def deleteCourse(self,args):
+        i = self.pool.currentIndex();
+        self.pool.removeItem(i);
+        del globalVar.courseInfo[i];
     def selectCourse(self, args):
         index = self.pool.currentIndex();
         info = globalVar.courseInfo[index];

@@ -68,7 +68,11 @@
        <string>Credit :</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="credit"/>
+     <widget class="QLineEdit" name="credit">
+      <property name="toolTip">
+       <string/>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QSplitter" name="splitter_10">
@@ -105,7 +109,7 @@
      </property>
      <widget class="QPushButton" name="removeBtn">
       <property name="toolTip">
-       <string>remove selected course from my list</string>
+       <string>Remove selected course from my list</string>
       </property>
       <property name="text">
        <string>Remove</string>
@@ -113,13 +117,16 @@
      </widget>
      <widget class="QPushButton" name="clearBtn">
       <property name="toolTip">
-       <string>clear all in my courses</string>
+       <string>Clear all of my courses</string>
       </property>
       <property name="text">
        <string>Clear</string>
       </property>
      </widget>
      <widget class="QPushButton" name="colorBtn">
+      <property name="toolTip">
+       <string>Apply color to my courses</string>
+      </property>
       <property name="text">
        <string>Colorize</string>
       </property>
@@ -186,7 +193,7 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Add Selected Course to My Courses List</string>
+      <string>Add selected course to my courses</string>
      </property>
      <property name="text">
       <string>Select</string>
@@ -200,10 +207,18 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Create A New Course</string>
+      <string>Create a new course entry</string>
      </property>
      <property name="text">
       <string>New</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="deleteBtn">
+     <property name="toolTip">
+      <string>Delete selected course entry</string>
+     </property>
+     <property name="text">
+      <string>Delete</string>
      </property>
     </widget>
    </widget>
