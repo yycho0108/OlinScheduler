@@ -24,7 +24,7 @@ Course Entry:
 - [x] Modularize Code
 - [x] Handle Resizing
 - [x] Detect Collision
-- [] finding best-fit
-- [] Adding Option to Eliminate Colliding Courses from pool
-- [] searching classes by criteria
-- [] setting display options (i.e. what to include)
+- [ ] finding best-fit
+- [ ] Adding Option to Eliminate Colliding Courses from pool
+- [ ] searching classes by criteria
+- [ ] setting display options (i.e. what to include)
