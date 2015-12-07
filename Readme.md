@@ -28,3 +28,5 @@ Course Entry:
 - [ ] Adding Option to Eliminate Colliding Courses from pool
 - [ ] searching classes by criteria
 - [ ] setting display options (i.e. what to include)
+- [ ] Enable Option to Scroll, in case the image gets too big
+- [ ] Enable Editing (so that the user does not have to create a new course & delete)

@@ -118,6 +118,7 @@ class OS_GUI(QMainWindow):
         self.saveBtn.clicked.connect(self.save);
         self.colorBtn.clicked.connect(self.setCourseColor);
         self.loadData();
+        self.onBrowseClass(self.pool.currentIndex()); #in order to avoid selecting w/o preview
     def loadData(self):
         try:
             with open('course.olin', 'rb') as f_in:
