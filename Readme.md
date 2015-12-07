@@ -30,3 +30,5 @@ Course Entry:
 - [ ] setting display options (i.e. what to include)
 - [ ] Enable Option to Scroll, in case the image gets too big
 - [ ] Enable Editing (so that the user does not have to create a new course & delete)
+- [ ] Add Save/Load functionality for My Courses List
+- [ ] Improve Indexing Methodology so that it is more stable & compatible for later versions

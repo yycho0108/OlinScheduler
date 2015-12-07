@@ -137,32 +137,16 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>260</y>
-      <width>99</width>
-      <height>27</height>
+      <y>246</y>
+      <width>121</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="toolTip">
      <string>Opens Schedule Window.</string>
     </property>
     <property name="text">
-     <string>Schedule</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="saveBtn">
-    <property name="geometry">
-     <rect>
-      <x>120</x>
-      <y>260</y>
-      <width>98</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Save Schedule as .png</string>
-    </property>
-    <property name="text">
-     <string>Save</string>
+     <string>Schedule View</string>
     </property>
    </widget>
    <widget class="QSplitter" name="splitter_6">
@@ -180,9 +164,12 @@
     <widget class="QComboBox" name="pool">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>4</horstretch>
+       <horstretch>5</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>The List of All Available Courses</string>
      </property>
     </widget>
     <widget class="QPushButton" name="selectBtn">
@@ -245,6 +232,15 @@
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menu_Save">
+     <property name="title">
+      <string>&amp;Save</string>
+     </property>
+     <addaction name="actionCourses"/>
+     <addaction name="actionSchedule"/>
+    </widget>
+    <addaction name="action_Open"/>
+    <addaction name="menu_Save"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -309,6 +305,36 @@
    </property>
    <property name="text">
     <string>Instructor</string>
+   </property>
+  </action>
+  <action name="actionSchedule">
+   <property name="text">
+    <string>Schedule</string>
+   </property>
+   <property name="toolTip">
+    <string>Save The Image of the Schedule as a .png file</string>
+   </property>
+   <property name="statusTip">
+    <string>Save The Image of the Schedule as a .png file</string>
+   </property>
+  </action>
+  <action name="actionCourses">
+   <property name="text">
+    <string>Courses</string>
+   </property>
+   <property name="toolTip">
+    <string>Saves List of All the Courses currently in the pool.</string>
+   </property>
+   <property name="statusTip">
+    <string>Saves List of All the Courses currently in the pool.</string>
+   </property>
+  </action>
+  <action name="action_Open">
+   <property name="text">
+    <string>&amp;Load</string>
+   </property>
+   <property name="statusTip">
+    <string>Loads a list of courses from a file.</string>
    </property>
   </action>
  </widget>

@@ -84,7 +84,7 @@ class ScheduleView(QGraphicsView):
                 if i == 0 and j != 0:
                     q.drawText(i*w/6,j*h/13,w/6,h/13,Qt.AlignTop|Qt.AlignHCenter,str(8+j)+":00");
                 elif j == 0:
-                    days = ['','Monday','TuesDay','WednesDay','Thursday','Friday'];
+                    days = ['','Monday','Tuesday','Wednesday','Thursday','Friday'];
                     q.drawText(i*w/6,j*h/13,w/6,h/13,Qt.AlignVCenter|Qt.AlignHCenter,days[i]);
 
     def resizeEvent(self,event):
@@ -115,7 +115,8 @@ class OS_GUI(QMainWindow):
         self.clearBtn.clicked.connect(self.clear);
         self.openSchedule.clicked.connect(self.onOpenSchedule);
         self.actionTitle.triggered.connect(self.visual.updateDisplay);
-        self.saveBtn.clicked.connect(self.save);
+        self.actionCourses.triggered.connect(self.saveCourses);
+        self.actionSchedule.triggered.connect(self.saveSchedule);
         self.colorBtn.clicked.connect(self.setCourseColor);
         self.loadData();
         self.onBrowseClass(self.pool.currentIndex()); #in order to avoid selecting w/o preview
@@ -140,9 +141,10 @@ class OS_GUI(QMainWindow):
                     self.loadData();
             else:
                 raise;
-    def save(self):
-        with open("course.olin", "wb") as out:
+    def saveCourses(self):
+        with open("course.olin","wb") as out:
             pickle.dump(globalVar.courseInfo,out,pickle.HIGHEST_PROTOCOL);
+    def saveSchedule(self):
         self.visual.save();
     def onOpenSchedule(self):
         if self.visual is not None:
