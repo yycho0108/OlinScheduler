@@ -14,6 +14,7 @@ import globalVar
 from CourseObject import *
 from CourseEntryDlg import *
 from LoginDlg import *
+
 def detectCollision(i_1,i_2): #two indices
     mp_1_list = globalVar.courseInfo[i_1]['meetingPattern']; #list of meetings
     mp_2_list = globalVar.courseInfo[i_2]['meetingPattern'];
