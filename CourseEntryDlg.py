@@ -2,16 +2,20 @@ from PyQt4 import uic
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
+#UI
+from UI.CourseEntryDlgUI import Ui_CourseEntryDlg
+
 def dayToDay(d):
     if str is 'Thursday':
         return 'R';
     else:
         return d[0];
 
-class CourseEntryDlg(QDialog):
+class CourseEntryDlg(QDialog,Ui_CourseEntryDlg):
     def __init__(self,parent=None):
         QDialog.__init__(self,parent);
-        uic.loadUi("CourseEntryDlg.ui",self);
+        #uic.loadUi("CourseEntryDlg.ui",self);
+        self.setupUi(self)
         self.addBtn.clicked.connect(self.addMP);
         self.MPTable.setHorizontalHeaderLabels(["Day","Time","Loc"]);
         self.instAddBtn.clicked.connect(self.addInst);

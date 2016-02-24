@@ -15,6 +15,9 @@ from CourseObject import *
 from CourseEntryDlg import *
 from LoginDlg import *
 
+from UI.MainWindowUI import Ui_MainWindow
+
+
 def detectCollision(i_1,i_2): #two indices
     mp_1_list = globalVar.courseInfo[i_1]['meetingPattern']; #list of meetings
     mp_2_list = globalVar.courseInfo[i_2]['meetingPattern'];
@@ -102,10 +105,10 @@ class ScheduleView(QGraphicsView):
     #    pass;
 
 
-class OS_GUI(QMainWindow):
+class OS_GUI(QMainWindow,Ui_MainWindow):
     def __init__(self, parent=None):
         QWidget.__init__(self,parent);
-        uic.loadUi('MainWindow.ui',self);
+        self.setupUi(self)
         self.pool.activated.connect(self.onBrowseClass);
         self.visual = None;
         self.onOpenSchedule();

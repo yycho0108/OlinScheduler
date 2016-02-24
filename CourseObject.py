@@ -5,6 +5,10 @@ from PyQt4 import uic
 from parser import *
 from copy import deepcopy
 
+
+from UI.SessionWidgetUI import Ui_courseObj
+
+
 class CourseObject():
     """
     container/manager for sessions
@@ -47,13 +51,14 @@ class CourseObject():
             item['widget'].move(left,top);
             item['widget'].resize(width,bottom-top);
 
-class SessionWidget(QWidget):
+class SessionWidget(QWidget,Ui_courseObj):
     """
     SessionWidget(parent=None,title='N/A',loc='N/A')
     """
     def __init__(self,parent=None,title='N/A',loc='N/A',time=[]):
         QWidget.__init__(self,parent);
-        uic.loadUi("SessionWidget.ui",self);
+        self.setupUi(self)
+        #uic.loadUi("SessionWidget.ui",self);
         
         globalVar.courseInfo; 
         self.setTitle(title);

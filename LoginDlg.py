@@ -2,12 +2,15 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from PyQt4 import uic
 
+from UI.LoginDlgUI import Ui_Dialog
+
 import getCourseInfo
 
-class LoginDlg(QDialog):
+class LoginDlg(QDialog,Ui_Dialog):
     def __init__(self,parent=None):
         QDialog.__init__(self,parent);
-        uic.loadUi("LoginDlg.ui",self);
+        self.setupUi(self)
+        #uic.loadUi("LoginDlg.ui",self);
         #self.termBox.addItem('SP');
         #self.termBox.addItem('FA');
     def accept(self):
