@@ -138,4 +138,5 @@ Session.vim
 # temporary
 .netrwhist
 *~
-
+chromedriver
+record/

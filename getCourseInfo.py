@@ -5,16 +5,19 @@ import pickle
 from urllib.request import urlretrieve
 import subprocess
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from parser import *
 
 def reachSite(userName, password, target="2016;SP"):
-    driver = webdriver.Firefox();
+    driver = webdriver.Chrome('./chromedriver')
     driver.implicitly_wait(3);
     driver.get("https://my.olin.edu/ICS/My_StAR/Registration_AddDrop.jnz");
     #time.sleep(2);
     driver.find_element_by_name("userName").send_keys(userName);
     driver.find_element_by_name("password").send_keys(password);
     driver.find_element_by_name("btnLogin").click();
+    time.sleep(2);
+    driver.get("https://my.olin.edu/ICS/My_StAR/Registration_AddDrop.jnz");
     #time.sleep(2);
     term = driver.find_element_by_id("pg0_V_ddlTerm");
     webdriver.support.select.Select(term).select_by_value(target);
